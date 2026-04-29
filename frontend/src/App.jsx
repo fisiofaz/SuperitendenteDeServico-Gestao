@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Login } from './pages/Login';
 import { CadastroPublicacao } from './pages/CadastroPublicacao';
 import { GestaoTerritorios } from './pages/GestaoTerritorios';
+import { AdminUsuarios } from './pages/AdminUsuarios';
 
 
 function App() {
@@ -21,6 +22,12 @@ function App() {
         </div>        
         <div className="flex gap-2">
           <button 
+            onClick={() => setTela('admin')}
+            className={`px-3 py-1 rounded-md text-sm transition-colors ${tela === 'admin' ? 'bg-blue-700' : 'hover:bg-blue-800'}`}
+          >
+            Admin
+          </button>
+          <button 
             onClick={() => setTela('publicacoes')}
             className={`px-3 py-1 rounded-md text-sm transition-colors ${tela === 'publicacoes' ? 'bg-blue-700' : 'hover:bg-blue-800'}`}
           >
@@ -38,10 +45,13 @@ function App() {
           >
             Sair
           </button>
+
         </div>
       </nav>
       <main className="mt-4">
-        {tela === 'publicacoes' ? <CadastroPublicacao /> : <GestaoTerritorios />}
+        {tela === 'publicacoes' && <CadastroPublicacao />}
+        {tela === 'territorios' && <GestaoTerritorios />}
+        {tela === 'admin' && <AdminUsuarios />}
       </main>
     </div>
   )
