@@ -14,21 +14,24 @@ function App() {
     { id: 1, publicador: "Irmão João", publicacao: "Seja Feliz!", sigla: "lff", status: "Pedido" }
   ]);
   const deletarPedido = (id) => {
-  if (window.confirm("Remover este pedido?")) {
-    setPedidos(pedidos.filter(p => p.id !== id));
-  }
+    if (window.confirm("Remover este pedido?")) {
+      setPedidos(pedidos.filter(p => p.id !== id));
+    }
   };
   const marcarComoEntregue = (id) => {
   // Muda o status para entregue ou remove da lista, como você preferir
-  alert("Pedido marcado como entregue!");
-  setPedidos(pedidos.filter(p => p.id !== id)); 
+    alert("Pedido marcado como entregue!");
+    setPedidos(pedidos.filter(p => p.id !== id)); 
   };
+
+  const [territorios, setTerritorios] = useState([
+    { id: 1, numero: "01", nome: "Centro - Setor A", status: "Disponível", publicador: "-", meses: 0 },
+    { id: 2, numero: "05", nome: "Vila Nova", status: "Na Rua", publicador: "Irmão Souza", meses: 4 },
+  ]);
   
   if (!isLogado) {
     return <Login onLogin={() => setIsLogado(true)} />;
   }
-
-  
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -68,16 +71,27 @@ function App() {
           >
             Sair
           </button>
-
         </div>
       </nav>
       <main className="mt-4">
         {tela === 'publicacoes' && <CadastroPublicacao />}
-        {tela === 'territorios' && <GestaoTerritorios />}
+        {tela === 'territorios' && <GestaoTerritorios 
+          territorios={territorios}
+          setTerritorios={setTerritorios}
+        />}
         {tela === 'admin' && <AdminUsuarios />}
-        {tela === 'dashboard' && <Dashboard totalPedidos={pedidos.length} irPara={setTela} />}
-        {tela === 'pedidos' && <PedidosConsolidados pedidos={pedidos} setPedidos={setPedidos} aoDeletar={deletarPedido}
-    aoEntregar={marcarComoEntregue}/>}
+        {tela === 'dashboard' && <Dashboard 
+          totalPedidos={pedidos.length} irPara={setTela} 
+          atrasados={territorios.filter(t => t.meses >= 4).length}
+          naRua={territorios.filter(t => t.status === "Na Rua").length}
+          irPara={setTela}
+        />}
+        {tela === 'pedidos' && <PedidosConsolidados 
+          pedidos={pedidos} 
+          setPedidos={setPedidos} 
+          aoDeletar={deletarPedido}
+          aoEntregar={marcarComoEntregue}
+        />}
       </main>
     </div>
   )

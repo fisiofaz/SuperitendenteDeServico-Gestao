@@ -1,24 +1,41 @@
 import { useState } from 'react';
 import { Input } from '../components/Input';
+import { Tabela } from '../components/Tabela';
 
-export function GestaoTerritorios() {
+export function GestaoTerritorios({ territorios, setTerritorios }) {
   const [numero, setNumero] = useState('');
   const [publicador, setPublicador] = useState('');
   const [dataSaida, setDataSaida] = useState('');
 
   const handleDesignar = (e) => {
     e.preventDefault();
-    console.log("Designando território:", { numero, publicador, dataSaida });
+    
+    // Criamos o novo registro de designação
+    const novaDesignacao = {
+      id: Date.now(),
+      numero: numero,
+      nome: `Setor ${numero}`, // Podemos ajustar o nome depois
+      status: "Na Rua",
+      publicador: publicador,
+      meses: 0 // Começa com 0 meses
+    };
+
+    setTerritorios([...territorios, novaDesignacao]);
+    
+    // Limpa o formulário
+    setNumero('');
+    setPublicador('');
+    setDataSaida('');
     alert(`Território ${numero} entregue para ${publicador}`);
   };
 
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Gestão de Territórios - Tropical</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 font-sans">Gestão de Territórios - Tropical</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Coluna 1: Formulário de Designação */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="lg:col-span-1 bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
           <h3 className="text-lg font-semibold mb-4 text-blue-700">Designar Cartão</h3>
           <form onSubmit={handleDesignar}>
             <Input 
@@ -39,19 +56,27 @@ export function GestaoTerritorios() {
               value={dataSaida}
               onChange={(e) => setDataSaida(e.target.value)}
             />
-            <button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-lg transition-colors">
+            <button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-lg transition-colors mt-2">
               Confirmar Designação
             </button>
           </form>
         </div>
 
         {/* Coluna 2: Status Rápido (Onde faremos a lista depois) */}
-        <div className="bg-blue-50 p-6 rounded-xl border border-blue-100">
-          <h3 className="text-lg font-semibold mb-4 text-blue-800">Resumo</h3>
-          <p className="text-sm text-blue-600">
-            Aqui aparecerão os territórios que estão "na rua" e há quanto tempo.
-          </p>
-          {/* Futuramente faremos um .map() aqui para listar os cartões */}
+        <div className="lg:col-span-2">
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">Territórios na Rua</h3>
+          <Tabela 
+            colunas={["Nº", "Localidade", "Responsável", "Ações"]}
+            dados={territorios.map(t => ({
+              id: t.id,
+              nome: t.numero,
+              email: t.nome,
+              perfil: t.publicador,
+              acoes: t.status
+            }))}
+            aoDeletar={(id) => setTerritorios(territorios.filter(t => t.id !== id))}
+            aoRecuperar={(id) => alert("Gerar relatório de retorno para o ID: " + id)}
+          />          
         </div>
       </div>
     </div>
