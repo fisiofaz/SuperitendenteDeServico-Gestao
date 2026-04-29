@@ -1,9 +1,9 @@
 import { Book, Map, Users, AlertTriangle } from 'lucide-react'; // Ícones deixam o visual moderno
 
-export function Dashboard() {
+export function Dashboard({ totalPedidos }) {
   const indicadores = [
     { label: "Territórios na Rua", valor: "12", cor: "bg-blue-500", icon: <Map size={24}/> },
-    { label: "Pedidos Pendentes", valor: "08", cor: "bg-orange-500", icon: <Book size={24}/> },
+    { label: "Pedidos Pendentes", valor: totalPedidos, cor: "bg-orange-500", icon: <Book size={24}/> },
     { label: "Servos Ativos", valor: "04", cor: "bg-green-500", icon: <Users size={24}/> },
     { label: "Territórios Atrasados", valor: "02", cor: "bg-red-500", icon: <AlertTriangle size={24}/> },
   ];
@@ -15,7 +15,7 @@ export function Dashboard() {
       {/* Grade de Indicadores */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         {indicadores.map((ind, i) => (
-          <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
+          <div key={i} onClick={ind.acao} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
             <div className={`${ind.cor} p-3 rounded-xl text-white`}>
               {ind.icon}
             </div>

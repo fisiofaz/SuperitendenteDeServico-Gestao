@@ -4,15 +4,20 @@ import { CadastroPublicacao } from './pages/CadastroPublicacao';
 import { GestaoTerritorios } from './pages/GestaoTerritorios';
 import { AdminUsuarios } from './pages/AdminUsuarios';
 import { Dashboard } from './pages/Dashboard';
+import { PedidosConsolidados } from './pages/PedidosConsolidados';
 
 
 function App() {
   const [isLogado, setIsLogado] = useState(false);  
   const [tela, setTela] = useState('dashboard');
-
+  const [pedidos, setPedidos] = useState([
+    { id: 1, publicador: "Irmão João", publicacao: "Seja Feliz!", sigla: "lff", status: "Pedido" }
+  ]);
   if (!isLogado) {
     return <Login onLogin={() => setIsLogado(true)} />;
   }
+
+  
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -59,7 +64,8 @@ function App() {
         {tela === 'publicacoes' && <CadastroPublicacao />}
         {tela === 'territorios' && <GestaoTerritorios />}
         {tela === 'admin' && <AdminUsuarios />}
-        {tela === 'dashboard' && <Dashboard />}
+        {tela === 'dashboard' && <Dashboard totalPedidos={pedidos.length} />}
+        {tela === 'pedidos' && <PedidosConsolidados pedidos={pedidos} setPedidos={setPedidos} />}
       </main>
     </div>
   )

@@ -2,11 +2,7 @@ import { useState } from 'react';
 import { Tabela } from '../components/Tabela';
 import { Input } from '../components/Input';
 
-export function PedidosConsolidados() {
-  const [pedidos, setPedidos] = useState([
-    { id: 1, publicador: "Irmão João", publicacao: "Seja Feliz para Sempre!", sigla: "lff", status: "Pedido" }
-  ]);
-
+export function PedidosConsolidados({ pedidos, setPedidos }) {
   // Estados para o novo pedido
   const [nomePublicador, setNomePublicador] = useState('');
   const [siglaPublicacao, setSiglaPublicacao] = useState('');
