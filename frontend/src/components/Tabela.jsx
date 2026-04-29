@@ -29,10 +29,10 @@ export function Tabela({ colunas, dados, aoDeletar, aoRecuperar, aoEditar }) {
                     Editar
                 </button>
                 <button 
-                  onClick={() => aoRecuperar(usuario.email)}
-                  className="text-orange-500 hover:underline font-medium"
-                >
-                  Senha
+                  onClick={() => aoRecuperar(usuario.email || usuario.id)}
+                  className="text-orange-600 hover:text-orange-800 font-semibold text-xs uppercase"
+          >
+                  {usuario.email?.includes('@') ? 'Senha' : 'Concluir'}
                 </button>
                 <button 
                   onClick={() => aoDeletar(usuario.id)}

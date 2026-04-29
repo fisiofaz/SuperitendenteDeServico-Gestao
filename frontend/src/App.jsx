@@ -13,6 +13,17 @@ function App() {
   const [pedidos, setPedidos] = useState([
     { id: 1, publicador: "Irmão João", publicacao: "Seja Feliz!", sigla: "lff", status: "Pedido" }
   ]);
+  const deletarPedido = (id) => {
+  if (window.confirm("Remover este pedido?")) {
+    setPedidos(pedidos.filter(p => p.id !== id));
+  }
+  };
+  const marcarComoEntregue = (id) => {
+  // Muda o status para entregue ou remove da lista, como você preferir
+  alert("Pedido marcado como entregue!");
+  setPedidos(pedidos.filter(p => p.id !== id)); 
+  };
+  
   if (!isLogado) {
     return <Login onLogin={() => setIsLogado(true)} />;
   }
@@ -64,8 +75,9 @@ function App() {
         {tela === 'publicacoes' && <CadastroPublicacao />}
         {tela === 'territorios' && <GestaoTerritorios />}
         {tela === 'admin' && <AdminUsuarios />}
-        {tela === 'dashboard' && <Dashboard totalPedidos={pedidos.length} />}
-        {tela === 'pedidos' && <PedidosConsolidados pedidos={pedidos} setPedidos={setPedidos} />}
+        {tela === 'dashboard' && <Dashboard totalPedidos={pedidos.length} irPara={setTela} />}
+        {tela === 'pedidos' && <PedidosConsolidados pedidos={pedidos} setPedidos={setPedidos} aoDeletar={deletarPedido}
+    aoEntregar={marcarComoEntregue}/>}
       </main>
     </div>
   )

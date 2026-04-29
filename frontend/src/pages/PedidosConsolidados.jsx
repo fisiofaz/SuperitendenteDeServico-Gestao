@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Tabela } from '../components/Tabela';
 import { Input } from '../components/Input';
 
-export function PedidosConsolidados({ pedidos, setPedidos }) {
+export function PedidosConsolidados({ pedidos, setPedidos, aoDeletar, aoEntregar }) {
   // Estados para o novo pedido
   const [nomePublicador, setNomePublicador] = useState('');
   const [siglaPublicacao, setSiglaPublicacao] = useState('');
@@ -70,15 +70,16 @@ export function PedidosConsolidados({ pedidos, setPedidos }) {
       </div>
 
       <Tabela 
-        colunas={["Publicador", "Item", "Sigla", "Status"]} 
+        colunas={["Publicador", "Item", "Sigla", "Ações"]} 
         dados={pedidos.map(p => ({
+          id: p.id,
           nome: p.publicador,
           email: p.publicacao,
           perfil: p.sigla,
-          acoes: p.status
         }))}
-        aoDeletar={(id) => setPedidos(pedidos.filter(p => p.id !== id))}
-        aoRecuperar={() => {}}
+        aoDeletar={aoDeletar}
+        aoEntregar={aoEntregar}
+        aoEditar={() => alert("Função de editar pedido em breve!")}
       />
     </div>
   );
