@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Input } from '../components/Input';
 import { Tabela } from '../components/Tabela';
+import { Search } from 'lucide-react';
 
 export function GestaoTerritorios({ territorios, setTerritorios }) {
   const [numero, setNumero] = useState('');
   const [publicador, setPublicador] = useState('');
   const [dataSaida, setDataSaida] = useState('');
+  const [busca, setBusca] = useState('');
 
   const handleDesignar = (e) => {
     e.preventDefault();
@@ -28,6 +30,10 @@ export function GestaoTerritorios({ territorios, setTerritorios }) {
     setDataSaida('');
     alert(`Território ${numero} entregue para ${publicador}`);
   };
+
+  const territoriosFiltrados = territorios.filter(t => 
+    t.numero.includes(busca) || t.nome.toLowerCase().includes(busca.toLowerCase())
+  );
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -64,18 +70,36 @@ export function GestaoTerritorios({ territorios, setTerritorios }) {
 
         {/* Coluna 2: Status Rápido (Onde faremos a lista depois) */}
         <div className="lg:col-span-2">
-          <h3 className="text-lg font-semibold mb-4 text-gray-700">Territórios na Rua</h3>
+          <div className="relative mb-4">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search size={18} className="text-gray-400" />
+            </div>
+            <Input 
+              label="Buscar Territórios" 
+              placeholder="Digite o número ou nome..." 
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+            />
+          </div>
           <Tabela 
             colunas={["Nº", "Localidade", "Responsável", "Ações"]}
-            dados={territorios.map(t => ({
+            dados={territoriosFiltrados.map(t => ({
               id: t.id,
               nome: t.numero,
               email: t.nome,
-              perfil: t.publicador,
+              perfil: (
+                <span className={`px-2 py-1 rounded-md text-xs font-bold ${
+                  t.meses >= 4 ? 'bg-red-100 text-red-700' : 
+                  t.status === "Na Rua" ? 'bg-blue-100 text-blue-700' : 
+                  'bg-green-100 text-green-700'
+                }`}>
+                  {t.status === "Na Rua" ? `Com: ${t.publicador}` : "Livre"}
+                </span>
+              ),
               acoes: t.status
             }))}
             aoDeletar={(id) => setTerritorios(territorios.filter(t => t.id !== id))}
-            aoRecuperar={(id) => alert("Gerar relatório de retorno para o ID: " + id)}
+            aoRecuperar={(id) => alert("Gerando S-13 para o cartão " + id)}
           />          
         </div>
       </div>
