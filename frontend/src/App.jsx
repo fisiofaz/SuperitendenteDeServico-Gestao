@@ -3,11 +3,12 @@ import { Login } from './pages/Login';
 import { CadastroPublicacao } from './pages/CadastroPublicacao';
 import { GestaoTerritorios } from './pages/GestaoTerritorios';
 import { AdminUsuarios } from './pages/AdminUsuarios';
+import { Dashboard } from './pages/Dashboard';
 
 
 function App() {
-  const [isLogado, setIsLogado] = useState(false);
-  const [tela, setTela] = useState('publicacoes'); 
+  const [isLogado, setIsLogado] = useState(false);  
+  const [tela, setTela] = useState('dashboard');
 
   if (!isLogado) {
     return <Login onLogin={() => setIsLogado(true)} />;
@@ -21,6 +22,12 @@ function App() {
           <span className="text-xs text-blue-300">Congregação Tropical</span>
         </div>        
         <div className="flex gap-2">
+          <button 
+            onClick={() => setTela('dashboard')}
+            className={`px-3 py-1 rounded-md text-sm transition-colors ${tela === 'dashboard' ? 'bg-blue-700' : 'hover:bg-blue-800'}`}
+          >
+            Início
+          </button>
           <button 
             onClick={() => setTela('admin')}
             className={`px-3 py-1 rounded-md text-sm transition-colors ${tela === 'admin' ? 'bg-blue-700' : 'hover:bg-blue-800'}`}
@@ -52,6 +59,7 @@ function App() {
         {tela === 'publicacoes' && <CadastroPublicacao />}
         {tela === 'territorios' && <GestaoTerritorios />}
         {tela === 'admin' && <AdminUsuarios />}
+        {tela === 'dashboard' && <Dashboard />}
       </main>
     </div>
   )
