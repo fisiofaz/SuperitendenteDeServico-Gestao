@@ -11,6 +11,10 @@ export function GestaoTerritorios({ territorios, setTerritorios }) {
 
   const handleDesignar = (e) => {
     e.preventDefault();
+
+    const dataInicio = new Date(dataSaida);
+    const hoje = new Date();
+    const diferencaMeses = (hoje.getFullYear() - dataInicio.getFullYear()) * 12 + (hoje.getMonth() - dataInicio.getMonth());
     
     // Criamos o novo registro de designação
     const novaDesignacao = {
@@ -19,7 +23,8 @@ export function GestaoTerritorios({ territorios, setTerritorios }) {
       nome: `Setor ${numero}`, // Podemos ajustar o nome depois
       status: "Na Rua",
       publicador: publicador,
-      meses: 0 // Começa com 0 meses
+      dataSaida: dataSaida,
+      meses: diferencaMeses // Começa com 0 meses
     };
 
     setTerritorios([...territorios, novaDesignacao]);
@@ -35,7 +40,7 @@ export function GestaoTerritorios({ territorios, setTerritorios }) {
     t.numero.includes(busca) || t.nome.toLowerCase().includes(busca.toLowerCase())
   );
 
-  return (
+ return (
     <div className="max-w-4xl mx-auto p-4">
       <h2 className="text-2xl font-bold text-gray-800 mb-6 font-sans">Gestão de Territórios - Tropical</h2>
 
@@ -82,24 +87,17 @@ export function GestaoTerritorios({ territorios, setTerritorios }) {
             />
           </div>
           <Tabela 
-            colunas={["Nº", "Localidade", "Responsável", "Ações"]}
+            colunas={["Nº", "Localidade", "Status", "Saída", "Tempo", "Ações"]}
             dados={territoriosFiltrados.map(t => ({
               id: t.id,
               nome: t.numero,
               email: t.nome,
-              perfil: (
-                <span className={`px-2 py-1 rounded-md text-xs font-bold ${
-                  t.meses >= 4 ? 'bg-red-100 text-red-700' : 
-                  t.status === "Na Rua" ? 'bg-blue-100 text-blue-700' : 
-                  'bg-green-100 text-green-700'
-                }`}>
-                  {t.status === "Na Rua" ? `Com: ${t.publicador}` : "Livre"}
-                </span>
-              ),
-              acoes: t.status
+              perfil: t.status === "Na Rua" ? t.publicador : "Livre",
+              campoExtra1: t.dataSaida || "-",
+              campoExtra2: t.status === "Na Rua" ? `${t.meses} meses` : "-"
             }))}
             aoDeletar={(id) => setTerritorios(territorios.filter(t => t.id !== id))}
-            aoRecuperar={(id) => alert("Gerando S-13 para o cartão " + id)}
+            aoRecuperar={(id) => alert("Concluir território " + id)}
           />          
         </div>
       </div>

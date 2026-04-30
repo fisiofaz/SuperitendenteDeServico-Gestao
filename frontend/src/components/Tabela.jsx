@@ -12,31 +12,39 @@ export function Tabela({ colunas, dados, aoDeletar, aoRecuperar, aoEditar }) {
           </tr>
         </thead>
         <tbody>
-          {dados.map((usuario) => (
-            <tr key={usuario.id} className="border-b border-gray-50 hover:bg-gray-50">
-              <td className="p-4 text-sm">{usuario.nome}</td>
-              <td className="p-4 text-sm">{usuario.email}</td>
+          {dados.map((item) => (
+            <tr key={item.id} className="border-b border-gray-50 hover:bg-gray-50">
+              <td className="p-4 text-sm">{item.nome}</td>
+              <td className="p-4 text-sm">{item.email}</td>
               <td className="p-4 text-sm">
-                <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-bold">
-                  {usuario.perfil}
+                <span className={`px-2 py-1 rounded-md text-xs font-bold ${
+                  item.perfil === 'Livre' || item.perfil === 'Disponível' 
+                    ? 'bg-green-100 text-green-700' 
+                    : 'bg-blue-100 text-blue-700'
+                }`}>
+                  {item.perfil}
                 </span>
               </td>
+
+              {item.campoExtra1 && <td className="p-4 text-sm text-gray-500">{item.campoExtra1}</td>}
+              {item.campoExtra2 && <td className="p-4 text-sm text-gray-500">{item.campoExtra2}</td>}
+
               <td className="p-4 text-sm flex gap-2">
                 <button 
-                    onClick={() => aoEditar(usuario)}
-                    className="text-blue-600 hover:text-blue-800 font-semibold text-xs uppercase tracking-wider"
+                    onClick={() => aoEditar(item)}
+                    className="text-blue-600 hover:text-blue-800 font-semibold text-xs uppercase"
                 >
                     Editar
                 </button>
                 <button 
-                  onClick={() => aoRecuperar(usuario.email || usuario.id)}
-                  className="text-orange-600 hover:text-orange-800 font-semibold text-xs uppercase"
-          >
-                  {usuario.email?.includes('@') ? 'Senha' : 'Concluir'}
+                  onClick={() => aoRecuperar(item.id)}
+                  className="text-orange-500 hover:text-orange-700 font-semibold text-xs uppercase"
+                >
+                  {item.email?.includes('@') ? 'Senha' : 'Concluir'}
                 </button>
                 <button 
-                  onClick={() => aoDeletar(usuario.id)}
-                  className="text-red-500 hover:underline font-medium"
+                  onClick={() => aoDeletar(item.id)}
+                  cclassName="text-red-500 hover:text-red-700 font-semibold text-xs uppercase"
                 >
                   Excluir
                 </button>

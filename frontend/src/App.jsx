@@ -80,18 +80,22 @@ function App() {
           setTerritorios={setTerritorios}
         />}
         {tela === 'admin' && <AdminUsuarios />}
-        {tela === 'dashboard' && <Dashboard 
-          totalPedidos={pedidos.length} irPara={setTela} 
-          atrasados={territorios.filter(t => t.meses >= 4).length}
-          naRua={territorios.filter(t => t.status === "Na Rua").length}
-          irPara={setTela}
-        />}
-        {tela === 'pedidos' && <PedidosConsolidados 
-          pedidos={pedidos} 
-          setPedidos={setPedidos} 
-          aoDeletar={deletarPedido}
-          aoEntregar={marcarComoEntregue}
-        />}
+        {tela === 'dashboard' && (
+          <Dashboard 
+            totalPedidos={pedidos.length} 
+            atrasados={territorios.filter(t => t.meses >= 4).length}
+            naRua={territorios.filter(t => t.status === "Na Rua").length}
+            irPara={setTela}
+          />
+        )}
+        {tela === 'pedidos' && (
+          <PedidosConsolidados 
+            pedidos={pedidos} 
+            setPedidos={setPedidos} 
+            aoDeletar={deletarPedido}
+            aoEntregar={marcarComoEntregue}
+          />
+        )}
       </main>
     </div>
   )
