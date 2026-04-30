@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Input } from '../components/Input';
 import { Tabela } from '../components/Tabela';
-import { Search } from 'lucide-react';
+import { Search, MessageCircle } from 'lucide-react';
 
 export function GestaoTerritorios({ territorios, setTerritorios, aoConcluir }) {
   const [numero, setNumero] = useState('');
@@ -15,19 +15,18 @@ export function GestaoTerritorios({ territorios, setTerritorios, aoConcluir }) {
     const dataInicio = new Date(dataSaida);
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
-    dataInicio.setHours(0, 0, 0, 0);
-    let diferencaMeses = (hoje.getFullYear() - dataInicio.getFullYear()) * 12 + (hoje.getMonth() - dataInicio.getMonth());
-    if (diferencaMeses < 0) diferencaMeses = 0;
+    dataInicio.setHours(0, 0, 0, 0);  
+    let mesesCalculados = (hoje.getFullYear() - dataInicio.getFullYear()) * 12 + (hoje.getMonth() - dataInicio.getMonth());
+    const mesesFinais = mesesCalculados < 0 ? 0 : mesesCalculados;
 
-    // Criamos o novo registro de designação
     const novaDesignacao = {
       id: Date.now(),
       numero: numero,
-      nome: `Setor ${numero}`, // Podemos ajustar o nome depois
+      nome: `Setor ${numero}`, 
       status: "Na Rua",
       publicador: publicador,
       dataSaida: dataSaida,
-      meses: diferencaMeses // Começa com 0 meses
+      meses: mesesFinais 
     };
 
     setTerritorios([...territorios, novaDesignacao]);
@@ -44,17 +43,19 @@ export function GestaoTerritorios({ territorios, setTerritorios, aoConcluir }) {
   );
 
   const formatarDataBR = (dataString) => {
-    if (!dataString || dataString === "-") return "-";
-  
-  // Divide a data YYYY-MM-DD
-    const [ano, mes, dia] = dataString.split("-");
-  
-  // Retorna no formato DD/MM/AAAA
+    if (!dataString || dataString === "-") return "-";   
+    const [ano, mes, dia] = dataString.split("-");   
     return `${dia}/${mes}/${ano}`;
   };
 
+  const gerarLinkWhatsapp = (territorio) => {
+    const saudacao = "Olá! Segue a designação do seu território:";
+    const mensagem = `${saudacao}%0A%0A*Nº:* ${territorio.numero}%0A*Local:* ${territorio.nome}%0A*Data de Saída:* ${territorio.dataSaida.split('-').reverse().join('/')}%0A%0ABom trabalho no campo! 📖`;  
+    return `https://wa.me/?text=${mensagem}`;
+  };
+
  return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="max-w-6xl mx-auto p-4">
       <h2 className="text-2xl font-bold text-gray-800 mb-6 font-sans">Gestão de Territórios - Tropical</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -90,7 +91,7 @@ export function GestaoTerritorios({ territorios, setTerritorios, aoConcluir }) {
         <div className="lg:col-span-2">
           <div className="relative mb-4">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search size={18} className="text-gray-400" />
+              <Search size={18} className="text-gray-400 mt-6" />
             </div>
             <Input 
               label="Buscar Territórios" 
@@ -107,8 +108,17 @@ export function GestaoTerritorios({ territorios, setTerritorios, aoConcluir }) {
               email: t.nome,
               perfil: t.status === "Na Rua" ? t.publicador : "Livre",
               campoExtra1: t.status === "Na Rua" ? formatarDataBR(t.dataSaida) : "-",
-              campoExtra2: t.status === "Na Rua" ? 
-                (t.meses === 0 ? "Retirado hoje" : `${t.meses} meses`) : "-"
+              campoExtra2: t.status === "Na Rua" ? (t.meses === 0 ? "Hoje" : `${t.meses}m`) : "-",
+              acoesPersonalizadas: t.status === "Na Rua" ? (
+                <a 
+                  href={gerarLinkWhatsapp(t)} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-green-100 p-1.5 rounded-full text-green-600 hover:bg-green-600 hover:text-white transition-all flex items-center justify-center"
+                >
+                  <MessageCircle size={16} strokeWidth={2.5} />
+                </a>              
+              ) : null                 
             }))}
             aoDeletar={(id) => setTerritorios(territorios.filter(t => t.id !== id))}
             aoRecuperar={aoConcluir}
