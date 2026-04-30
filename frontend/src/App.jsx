@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Login } from './pages/Login';
 import { CadastroPublicacao } from './pages/CadastroPublicacao';
 import { GestaoTerritorios } from './pages/GestaoTerritorios';
@@ -8,27 +8,55 @@ import { PedidosConsolidados } from './pages/PedidosConsolidados';
 
 
 function App() {
-  const [isLogado, setIsLogado] = useState(false);  
   const [tela, setTela] = useState('dashboard');
-  const [pedidos, setPedidos] = useState([
-    { id: 1, publicador: "Irmão João", publicacao: "Seja Feliz!", sigla: "lff", status: "Pedido" }
-  ]);
+  const [isLogado, setIsLogado] = useState(false);   
+  const [pedidos, setPedidos] = useState(() => {
+    const salvos = localStorage.getItem('pedidos_tropical');
+    return salvos ? JSON.parse(salvos) : [];
+  });
+  const [territorios, setTerritorios] = useState(() => {
+    const salvos = localStorage.getItem('territorios_tropical');
+    return salvos ? JSON.parse(salvos) : [
+      { id: 1, numero: "01", nome: "Centro - Setor A", status: "Livre", publicador: "-", meses: 0 }
+    ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('pedidos_tropical', JSON.stringify(pedidos));
+  }, [pedidos]);
+
+  useEffect(() => {
+    localStorage.setItem('territorios_tropical', JSON.stringify(territorios));
+  }, [territorios]);
+
   const deletarPedido = (id) => {
     if (window.confirm("Remover este pedido?")) {
       setPedidos(pedidos.filter(p => p.id !== id));
     }
   };
+  
   const marcarComoEntregue = (id) => {
   // Muda o status para entregue ou remove da lista, como você preferir
     alert("Pedido marcado como entregue!");
     setPedidos(pedidos.filter(p => p.id !== id)); 
   };
 
-  const [territorios, setTerritorios] = useState([
-    { id: 1, numero: "01", nome: "Centro - Setor A", status: "Disponível", publicador: "-", meses: 0 },
-    { id: 2, numero: "05", nome: "Vila Nova", status: "Na Rua", publicador: "Irmão Souza", meses: 4 },
-  ]);
-  
+  const concluirTerritorio = (id) => {
+    setTerritorios(territorios.map(t => {
+      if (t.id === id) {
+        return { 
+          ...t, 
+          status: "Livre", 
+          publicador: "-", 
+          dataSaida: "-", 
+          meses: 0 
+        };
+      }
+      return t;
+    }));
+    alert("Cartão devolvido ao arquivo!");
+  };
+    
   if (!isLogado) {
     return <Login onLogin={() => setIsLogado(true)} />;
   }
@@ -78,6 +106,7 @@ function App() {
         {tela === 'territorios' && <GestaoTerritorios 
           territorios={territorios}
           setTerritorios={setTerritorios}
+          aoConcluir={concluirTerritorio}
         />}
         {tela === 'admin' && <AdminUsuarios />}
         {tela === 'dashboard' && (

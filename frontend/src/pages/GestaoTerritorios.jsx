@@ -3,7 +3,7 @@ import { Input } from '../components/Input';
 import { Tabela } from '../components/Tabela';
 import { Search } from 'lucide-react';
 
-export function GestaoTerritorios({ territorios, setTerritorios }) {
+export function GestaoTerritorios({ territorios, setTerritorios, aoConcluir }) {
   const [numero, setNumero] = useState('');
   const [publicador, setPublicador] = useState('');
   const [dataSaida, setDataSaida] = useState('');
@@ -14,8 +14,11 @@ export function GestaoTerritorios({ territorios, setTerritorios }) {
 
     const dataInicio = new Date(dataSaida);
     const hoje = new Date();
-    const diferencaMeses = (hoje.getFullYear() - dataInicio.getFullYear()) * 12 + (hoje.getMonth() - dataInicio.getMonth());
-    
+    hoje.setHours(0, 0, 0, 0);
+    dataInicio.setHours(0, 0, 0, 0);
+    let diferencaMeses = (hoje.getFullYear() - dataInicio.getFullYear()) * 12 + (hoje.getMonth() - dataInicio.getMonth());
+    if (diferencaMeses < 0) diferencaMeses = 0;
+
     // Criamos o novo registro de designação
     const novaDesignacao = {
       id: Date.now(),
@@ -39,6 +42,16 @@ export function GestaoTerritorios({ territorios, setTerritorios }) {
   const territoriosFiltrados = territorios.filter(t => 
     t.numero.includes(busca) || t.nome.toLowerCase().includes(busca.toLowerCase())
   );
+
+  const formatarDataBR = (dataString) => {
+    if (!dataString || dataString === "-") return "-";
+  
+  // Divide a data YYYY-MM-DD
+    const [ano, mes, dia] = dataString.split("-");
+  
+  // Retorna no formato DD/MM/AAAA
+    return `${dia}/${mes}/${ano}`;
+  };
 
  return (
     <div className="max-w-4xl mx-auto p-4">
@@ -93,11 +106,12 @@ export function GestaoTerritorios({ territorios, setTerritorios }) {
               nome: t.numero,
               email: t.nome,
               perfil: t.status === "Na Rua" ? t.publicador : "Livre",
-              campoExtra1: t.dataSaida || "-",
-              campoExtra2: t.status === "Na Rua" ? `${t.meses} meses` : "-"
+              campoExtra1: t.status === "Na Rua" ? formatarDataBR(t.dataSaida) : "-",
+              campoExtra2: t.status === "Na Rua" ? 
+                (t.meses === 0 ? "Retirado hoje" : `${t.meses} meses`) : "-"
             }))}
             aoDeletar={(id) => setTerritorios(territorios.filter(t => t.id !== id))}
-            aoRecuperar={(id) => alert("Concluir território " + id)}
+            aoRecuperar={aoConcluir}
           />          
         </div>
       </div>
