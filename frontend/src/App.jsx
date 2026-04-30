@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import { Navbar } from './components/Navbar';
 import { Login } from './pages/Login';
 import { CadastroPublicacao } from './pages/CadastroPublicacao';
 import { GestaoTerritorios } from './pages/GestaoTerritorios';
 import { AdminUsuarios } from './pages/AdminUsuarios';
 import { Dashboard } from './pages/Dashboard';
 import { PedidosConsolidados } from './pages/PedidosConsolidados';
-
+import { HistoricoS13 } from './pages/HistoricoS13';
 
 function App() {
   const [tela, setTela] = useState('dashboard');
@@ -21,6 +22,11 @@ function App() {
     ];
   });
 
+  const [historicoTerritorios, setHistoricoTerritorios] = useState(() => {
+    const salvos = localStorage.getItem('historico_s13');
+    return salvos ? JSON.parse(salvos) : [];
+  });
+
   useEffect(() => {
     localStorage.setItem('pedidos_tropical', JSON.stringify(pedidos));
   }, [pedidos]);
@@ -28,6 +34,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem('territorios_tropical', JSON.stringify(territorios));
   }, [territorios]);
+
+  useEffect(() => {
+    localStorage.setItem('historico_s13', JSON.stringify(historicoTerritorios));
+  }, [historicoTerritorios]);
 
   const deletarPedido = (id) => {
     if (window.confirm("Remover este pedido?")) {
@@ -41,20 +51,24 @@ function App() {
     setPedidos(pedidos.filter(p => p.id !== id)); 
   };
 
-  const concluirTerritorio = (id) => {
-    setTerritorios(territorios.map(t => {
-      if (t.id === id) {
-        return { 
-          ...t, 
-          status: "Livre", 
-          publicador: "-", 
-          dataSaida: "-", 
-          meses: 0 
-        };
-      }
-      return t;
-    }));
-    alert("Cartão devolvido ao arquivo!");
+  const concluirComRelatorio = (id, notas) => {
+    const territorio = territorios.find(t => t.id === id);
+  
+    const novoRegistro = {
+     id: Date.now(),
+      numero: territorio.numero,
+      publicador: territorio.publicador,
+      dataSaida: territorio.dataSaida,
+      dataRetorno: new Date().toISOString().split('T')[0],
+      observacoes: notas
+    };
+
+    setHistoricoTerritorios([...historicoTerritorios, novoRegistro]);
+  
+    // Limpa o território atual
+    setTerritorios(territorios.map(t => 
+      t.id === id ? { ...t, status: "Livre", publicador: "-", dataSaida: "-", meses: 0 } : t
+    ));
   };
     
   if (!isLogado) {
@@ -63,66 +77,46 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="bg-blue-900 p-4 text-white shadow-lg flex justify-between items-center">
-        <div className="flex flex-col">
-          <h1 className="text-lg font-bold uppercase tracking-tighter leading-none">Gestão do Serviço</h1>
-          <span className="text-xs text-blue-300">Congregação Tropical</span>
-        </div>        
-        <div className="flex gap-2">
-          <button 
-            onClick={() => setTela('dashboard')}
-            className={`px-3 py-1 rounded-md text-sm transition-colors ${tela === 'dashboard' ? 'bg-blue-700' : 'hover:bg-blue-800'}`}
-          >
-            Início
-          </button>
-          <button 
-            onClick={() => setTela('admin')}
-            className={`px-3 py-1 rounded-md text-sm transition-colors ${tela === 'admin' ? 'bg-blue-700' : 'hover:bg-blue-800'}`}
-          >
-            Admin
-          </button>
-          <button 
-            onClick={() => setTela('publicacoes')}
-            className={`px-3 py-1 rounded-md text-sm transition-colors ${tela === 'publicacoes' ? 'bg-blue-700' : 'hover:bg-blue-800'}`}
-          >
-            Publicações
-          </button>
-          <button 
-            onClick={() => setTela('territorios')}
-            className={`px-3 py-1 rounded-md text-sm transition-colors ${tela === 'territorios' ? 'bg-blue-700' : 'hover:bg-blue-800 '}`}
-          >
-            Territórios
-          </button>
-          <button 
-            onClick={() => setIsLogado(false)}
-            className="ml-4 px-3 py-1 border border-red-400 text-red-400 rounded-md text-sm hover:bg-red-500 hover:text-white transition-all"
-          >
-            Sair
-          </button>
-        </div>
-      </nav>
-      <main className="mt-4">
-        {tela === 'publicacoes' && <CadastroPublicacao />}
-        {tela === 'territorios' && <GestaoTerritorios 
-          territorios={territorios}
-          setTerritorios={setTerritorios}
-          aoConcluir={concluirTerritorio}
-        />}
-        {tela === 'admin' && <AdminUsuarios />}
+      <Navbar 
+        telaAtiva={tela} 
+        setTela={setTela} 
+        aoSair={() => setIsLogado(false)} 
+      />
+      <main className="container mx-auto mt-6 px-4">
         {tela === 'dashboard' && (
           <Dashboard 
-            totalPedidos={pedidos.length} 
-            atrasados={territorios.filter(t => t.meses >= 4).length}
-            naRua={territorios.filter(t => t.status === "Na Rua").length}
             irPara={setTela}
+            totalPedidos={pedidos.length}
+            totalRegistros={historicoTerritorios.length}
+            totalTerritoriosRua={territorios.filter(t => t.status === "Na Rua").length}
           />
         )}
+
+        {tela === 'territorios' && (
+          <GestaoTerritorios 
+            territorios={territorios}
+            setTerritorios={setTerritorios}
+            aoConcluir={concluirComRelatorio}
+          />
+        )}
+
+        {tela === 'publicacoes' && <CadastroPublicacao />}
+        
+        {tela === 'admin' && <AdminUsuarios />}
+
         {tela === 'pedidos' && (
           <PedidosConsolidados 
             pedidos={pedidos} 
             setPedidos={setPedidos} 
             aoDeletar={deletarPedido}
             aoEntregar={marcarComoEntregue}
+          />
+        )}
+
+        {tela === 'historico' && (
+          <HistoricoS13 
+            registros={historicoTerritorios} 
+            setRegistros={setHistoricoTerritorios} 
           />
         )}
       </main>

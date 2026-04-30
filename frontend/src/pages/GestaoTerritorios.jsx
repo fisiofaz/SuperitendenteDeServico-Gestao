@@ -8,14 +8,17 @@ export function GestaoTerritorios({ territorios, setTerritorios, aoConcluir }) {
   const [publicador, setPublicador] = useState('');
   const [dataSaida, setDataSaida] = useState('');
   const [busca, setBusca] = useState('');
+  const [mostrandoRetorno, setMostrandoRetorno] = useState(false);
+  const [territorioSelecionado, setTerritorioSelecionado] = useState(null);
+  const [notasRetorno, setNotasRetorno] = useState('');
 
   const handleDesignar = (e) => {
     e.preventDefault();
-
     const dataInicio = new Date(dataSaida);
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
     dataInicio.setHours(0, 0, 0, 0);  
+    
     let mesesCalculados = (hoje.getFullYear() - dataInicio.getFullYear()) * 12 + (hoje.getMonth() - dataInicio.getMonth());
     const mesesFinais = mesesCalculados < 0 ? 0 : mesesCalculados;
 
@@ -36,6 +39,14 @@ export function GestaoTerritorios({ territorios, setTerritorios, aoConcluir }) {
     setPublicador('');
     setDataSaida('');
     alert(`Território ${numero} entregue para ${publicador}`);
+  };
+
+  const prepararConclusao = (id) => {
+    const t = territorios.find(item => item.id === id);
+    if (t.status === "Livre") return alert("Este território já está livre!");
+    
+    setTerritorioSelecionado(t);
+    setMostrandoRetorno(true);
   };
 
   const territoriosFiltrados = territorios.filter(t => 
@@ -121,10 +132,48 @@ export function GestaoTerritorios({ territorios, setTerritorios, aoConcluir }) {
               ) : null                 
             }))}
             aoDeletar={(id) => setTerritorios(territorios.filter(t => t.id !== id))}
-            aoRecuperar={aoConcluir}
+            aoRecuperar={prepararConclusao}
           />          
         </div>
       </div>
+      {/* --- MODAL DO S-13 --- */}
+      {mostrandoRetorno && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl border border-gray-100">
+            <h3 className="text-xl font-bold text-gray-800 mb-2">Relatório de Retorno (S-13)</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Território <strong>{territorioSelecionado?.numero}</strong> entregue por <strong>{territorioSelecionado?.publicador}</strong>.
+            </p>
+            
+            <label className="block text-sm font-semibold text-gray-700 mb-1">Notas e Observações</label>
+            <textarea 
+              className="w-full border border-gray-200 rounded-xl p-3 text-sm h-28 focus:ring-2 focus:ring-orange-500 outline-none transition-all bg-gray-50"
+              placeholder="Alguma observação importante sobre o território?"
+              value={notasRetorno}
+              onChange={(e) => setNotasRetorno(e.target.value)}
+            />
+
+            <div className="flex gap-3 mt-6">
+              <button 
+                onClick={() => setMostrandoRetorno(false)}
+                className="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl font-bold text-gray-600 hover:bg-gray-100 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={() => {
+                  aoConcluir(territorioSelecionado.id, notasRetorno);
+                  setMostrandoRetorno(false);
+                  setNotasRetorno('');
+                }}
+                className="flex-1 px-4 py-2.5 bg-orange-500 text-white rounded-xl font-bold hover:bg-orange-600 shadow-lg shadow-orange-200 transition-all"
+              >
+                Confirmar Retorno
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
