@@ -1,12 +1,13 @@
-import { Map, Book, Users, History, LayoutDashboard, LogOut, UserCheck } from 'lucide-react';
+import { Map, Book, Users, History, LayoutDashboard, LogOut, UserCheck, MapPin } from 'lucide-react';
 
 export function Navbar({ telaAtiva, setTela, aoSair }) {
   const itensMenu = [
     { id: 'dashboard', label: 'Início', icon: <LayoutDashboard size={18} /> },
     { id: 'admin', label: 'Admin', icon: <Users size={18} /> },
-    { id: 'pedidos', label: 'Publicações', icon: <Book size={18} /> },
-    { id: 'publicadores', label: 'Publicadores', icon: <UserCheck size={18} /> },
     { id: 'territorios', label: 'Territórios', icon: <Map size={18} /> },
+    { id: 'publicadores', label: 'Publicadores', icon: <UserCheck size={18} /> },
+    { id: 'cadastro_territorio', label: 'Cartões', icon: <MapPin size={18} /> },    
+    { id: 'pedidos', label: 'Publicações', icon: <Book size={18} /> },
     { id: 'historico', label: 'Histórico S-13', icon: <History size={18} /> },    
   ];
 

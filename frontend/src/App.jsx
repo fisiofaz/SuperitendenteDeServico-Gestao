@@ -8,6 +8,8 @@ import { Dashboard } from './pages/Dashboard';
 import { PedidosConsolidados } from './pages/PedidosConsolidados';
 import { HistoricoS13 } from './pages/HistoricoS13';
 import { ListaPublicadores } from './pages/ListaPublicadores';
+import { CadastroTerritorio } from './pages/CadastroTerritorio';
+
 
 function App() {
   const [tela, setTela] = useState('dashboard');
@@ -81,6 +83,19 @@ function App() {
     ));
   };
 
+  const adicionarNovoTerritorio = (dados) => {
+    const novo = {
+      id: Date.now(),
+      numero: dados.numero,
+      nome: dados.nome,
+      status: "Livre",
+      publicador: "-",
+      dataSaida: "-",
+      meses: 0
+    };
+    setTerritorios([...territorios, novo].sort((a, b) => a.numero - b.numero));
+  };
+
      
   if (!isLogado) {
     return <Login onLogin={() => setIsLogado(true)} />;
@@ -109,6 +124,13 @@ function App() {
             setTerritorios={setTerritorios}
             aoConcluir={concluirComRelatorio}
             listaPublicadores={publicadores}
+          />
+        )}
+        {tela === 'cadastro_territorio' && (
+          <CadastroTerritorio 
+            territorios={territorios} 
+            setTerritorios={setTerritorios} 
+            aoAdicionar={adicionarNovoTerritorio} // <-- AQUI a função é usada!
           />
         )}
 
