@@ -1,12 +1,13 @@
-import { Map, Book, Users, History, LayoutDashboard, LogOut } from 'lucide-react';
+import { Map, Book, Users, History, LayoutDashboard, LogOut, UserCheck } from 'lucide-react';
 
-export function Navbar({ telaAtiva, setTela }) {
+export function Navbar({ telaAtiva, setTela, aoSair }) {
   const itensMenu = [
     { id: 'dashboard', label: 'Início', icon: <LayoutDashboard size={18} /> },
     { id: 'admin', label: 'Admin', icon: <Users size={18} /> },
     { id: 'pedidos', label: 'Publicações', icon: <Book size={18} /> },
+    { id: 'publicadores', label: 'Publicadores', icon: <UserCheck size={18} /> },
     { id: 'territorios', label: 'Territórios', icon: <Map size={18} /> },
-    { id: 'historico', label: 'Histórico S-13', icon: <History size={18} /> },
+    { id: 'historico', label: 'Histórico S-13', icon: <History size={18} /> },    
   ];
 
   return (
@@ -44,7 +45,7 @@ export function Navbar({ telaAtiva, setTela }) {
         {/* Botão Sair Estilizado */}
         <button 
           className="flex items-center gap-2 px-4 py-2 border border-red-400/40 text-red-100 rounded-xl text-sm font-bold hover:bg-red-500 hover:text-white transition-all group"
-          onClick={() => window.confirm("Deseja realmente sair?")}
+          onClick={aoSair}
         >
           <LogOut size={18} className="group-hover:translate-x-1 transition-transform" />
           Sair

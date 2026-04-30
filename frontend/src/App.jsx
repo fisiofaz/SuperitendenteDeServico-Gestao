@@ -7,6 +7,7 @@ import { AdminUsuarios } from './pages/AdminUsuarios';
 import { Dashboard } from './pages/Dashboard';
 import { PedidosConsolidados } from './pages/PedidosConsolidados';
 import { HistoricoS13 } from './pages/HistoricoS13';
+import { ListaPublicadores } from './pages/ListaPublicadores';
 
 function App() {
   const [tela, setTela] = useState('dashboard');
@@ -27,6 +28,11 @@ function App() {
     return salvos ? JSON.parse(salvos) : [];
   });
 
+  const [publicadores, setPublicadores] = useState(() => {
+    const salvos = localStorage.getItem('publicadores_tropical');
+    return salvos ? JSON.parse(salvos) : [];
+  });
+
   useEffect(() => {
     localStorage.setItem('pedidos_tropical', JSON.stringify(pedidos));
   }, [pedidos]);
@@ -38,6 +44,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem('historico_s13', JSON.stringify(historicoTerritorios));
   }, [historicoTerritorios]);
+
+  useEffect(() => {
+    localStorage.setItem('publicadores_tropical', JSON.stringify(publicadores));
+  }, [publicadores]);
 
   const deletarPedido = (id) => {
     if (window.confirm("Remover este pedido?")) {
@@ -70,7 +80,8 @@ function App() {
       t.id === id ? { ...t, status: "Livre", publicador: "-", dataSaida: "-", meses: 0 } : t
     ));
   };
-    
+
+     
   if (!isLogado) {
     return <Login onLogin={() => setIsLogado(true)} />;
   }
@@ -97,6 +108,14 @@ function App() {
             territorios={territorios}
             setTerritorios={setTerritorios}
             aoConcluir={concluirComRelatorio}
+            listaPublicadores={publicadores}
+          />
+        )}
+
+        {tela === 'publicadores' && (
+          <ListaPublicadores 
+            publicadores={publicadores} 
+            setPublicadores={setPublicadores} 
           />
         )}
 

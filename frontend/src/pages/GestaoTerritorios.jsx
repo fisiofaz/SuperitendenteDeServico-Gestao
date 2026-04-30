@@ -3,7 +3,7 @@ import { Input } from '../components/Input';
 import { Tabela } from '../components/Tabela';
 import { Search, MessageCircle } from 'lucide-react';
 
-export function GestaoTerritorios({ territorios, setTerritorios, aoConcluir }) {
+export function GestaoTerritorios({ territorios, setTerritorios, aoConcluir, listaPublicadores = [] }) {
   const [numero, setNumero] = useState('');
   const [publicador, setPublicador] = useState('');
   const [dataSaida, setDataSaida] = useState('');
@@ -80,12 +80,29 @@ export function GestaoTerritorios({ territorios, setTerritorios, aoConcluir }) {
               value={numero}
               onChange={(e) => setNumero(e.target.value)}
             />
-            <Input 
-              label="Nome do Publicador" 
-              placeholder="Quem vai trabalhar?" 
-              value={publicador}
-              onChange={(e) => setPublicador(e.target.value)}
-            />
+            <div className="mb-4">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Selecionar Publicador
+              </label>
+              <select
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-700"
+                value={publicador}
+                onChange={(e) => setPublicador(e.target.value)}
+                required
+              >
+                <option value="">Selecione um irmão...</option>
+                {listaPublicadores.map((p) => (
+                  <option key={p.id} value={p.nome}>
+                    {p.nome}
+                  </option>
+                ))}
+              </select>
+              {listaPublicadores.length === 0 && (
+                <p className="text-xs text-red-500 mt-1">
+                  Nenhum publicador cadastrado. Vá em "Publicadores" primeiro.
+                </p>
+              )}
+            </div>
             <Input 
               label="Data de Saída" 
               type="date"
