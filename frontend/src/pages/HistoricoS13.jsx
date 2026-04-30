@@ -53,7 +53,7 @@ export function HistoricoS13({ registros, setRegistros }) {
             
             // Tratamento das notas para não quebrar a tabela
             campoExtra2: (
-              <div className="max-w-[250px] truncate text-gray-600" title={reg.observacoes}>
+              <div className="max-w-62.5 truncate text-gray-600" title={reg.observacoes}>
                 {reg.observacoes || <span className="text-gray-300 italic">Sem notas</span>}
               </div>
             ),
