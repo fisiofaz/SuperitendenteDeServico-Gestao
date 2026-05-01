@@ -35,6 +35,11 @@ function App() {
     return salvos ? JSON.parse(salvos) : [];
   });
 
+  const [historicoMovimentacao, setHistoricoMovimentacao] = useState(() => {
+    const salvas = localStorage.getItem('historico_estoque');
+    return salvas ? JSON.parse(salvas) : [];
+  });
+
   const [publicadores, setPublicadores] = useState(() => {
     const salvos = localStorage.getItem('publicadores_tropical');
     return salvos ? JSON.parse(salvos) : [];
@@ -140,15 +145,30 @@ function App() {
       meses: 0
     };
     setTerritorios([...territorios, novo].sort((a, b) => a.numero - b.numero));
-  };
+    };
 
-  const atualizarQuantidadeEstoque = (itemId, qtdAlterada) => {
+    const atualizarQuantidadeEstoque = (itemId, qtdAlterada) => {
+    const itemAfetado = estoque.find(i => i.id === itemId);
+  
     setEstoque(prevEstoque => prevEstoque.map(item => {
       if (item.id === itemId) {
         return { ...item, quantidadeAtual: (item.quantidadeAtual || 0) + qtdAlterada };
       }
       return item;
     }));
+
+    const novoMovimento = {
+      id: Date.now(),
+      data: new Date().toISOString().split('T')[0], // YYYY-MM-DD
+      itemNome: itemAfetado?.nome || "Item Desconhecido",
+      tipo: qtdAlterada > 0 ? 'entrada' : 'saída',
+      quantidade: Math.abs(qtdAlterada),
+      publicador: "Balcão" // Você pode expandir isso depois
+    };
+
+    const novoHistorico = [novoMovimento, ...historicoMovimentacao];
+    setHistoricoMovimentacao(novoHistorico);
+    localStorage.setItem('historico_estoque', JSON.stringify(novoHistorico));
   };
 
      
@@ -218,6 +238,8 @@ function App() {
           <GestaoEstoque 
             estoque={estoque} 
             atualizarQuantidade={atualizarQuantidadeEstoque}
+            historicoMovimentacao={historicoMovimentacao} 
+            voltar={() => setTela('dashboard')}
           />
         )}
 

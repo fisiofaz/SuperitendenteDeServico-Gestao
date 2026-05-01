@@ -114,7 +114,7 @@ export function Dashboard({
         {/* NOVO ALERTA: Estoque Baixo */}
         {itensCriticos.length > 0 && (
           <div 
-            className="bg-white/70 backdrop-blur-md border border-amber-200/50 rounded-[2rem] p-6 flex items-center justify-between group cursor-pointer hover:bg-white hover:shadow-xl hover:shadow-amber-100/50 transition-all duration-500"
+            className="bg-white/70 backdrop-blur-md border border-amber-200/50 rounded-4xl p-6 flex items-center justify-between group cursor-pointer hover:bg-white hover:shadow-xl hover:shadow-amber-100/50 transition-all duration-500"
             onClick={() => irPara('gestao_estoque')              
           }>
             <div className="flex items-center gap-4">
@@ -134,7 +134,7 @@ export function Dashboard({
           </div>
         )}
         {/* Territórios Atrasados */}
-        <div className="bg-white/70 backdrop-blur-md border border-red-200/50 rounded-[2rem] p-6 flex items-center gap-5 group hover:bg-white hover:shadow-xl hover:shadow-red-100/50 transition-all duration-500">
+        <div className="bg-white/70 backdrop-blur-md border border-red-200/50 rounded-4xl p-6 flex items-center gap-5 group hover:bg-white hover:shadow-xl hover:shadow-red-100/50 transition-all duration-500">
           <div className="bg-red-500 text-white p-4 rounded-2xl shadow-lg shadow-red-200">
             <AlertTriangle size={24} />
           </div>
