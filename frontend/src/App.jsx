@@ -9,6 +9,7 @@ import { PedidosConsolidados } from './pages/PedidosConsolidados';
 import { HistoricoS13 } from './pages/HistoricoS13';
 import { ListaPublicadores } from './pages/ListaPublicadores';
 import { CadastroTerritorio } from './pages/CadastroTerritorio';
+import { GestaoEstoque } from './pages/GestaoEstoque';
 
 
 function App() {
@@ -35,6 +36,16 @@ function App() {
     return salvos ? JSON.parse(salvos) : [];
   });
 
+  const [estoque, setEstoque] = useState(() => {
+    const salvos = localStorage.getItem('estoque_tropical');
+    return salvos ? JSON.parse(salvos) : [];
+  });
+
+  const [movimentacoes, setMovimentacoes] = useState(() => {
+    const salvos = localStorage.getItem('movimentacoes_tropical');
+    return salvos ? JSON.parse(salvos) : [];
+  });
+
   useEffect(() => {
     localStorage.setItem('pedidos_tropical', JSON.stringify(pedidos));
   }, [pedidos]);
@@ -50,6 +61,14 @@ function App() {
   useEffect(() => {
     localStorage.setItem('publicadores_tropical', JSON.stringify(publicadores));
   }, [publicadores]);
+
+  useEffect(() => {
+    localStorage.setItem('estoque_tropical', JSON.stringify(estoque));
+  }, [estoque]);
+
+  useEffect(() => {
+    localStorage.setItem('movimentacoes_tropical', JSON.stringify(movimentacoes));
+  }, [movimentacoes]);
 
   const deletarPedido = (id) => {
     if (window.confirm("Remover este pedido?")) {
@@ -94,6 +113,15 @@ function App() {
       meses: 0
     };
     setTerritorios([...territorios, novo].sort((a, b) => a.numero - b.numero));
+  };
+
+  const atualizarQuantidadeEstoque = (itemId, qtdAlterada) => {
+    setEstoque(prevEstoque => prevEstoque.map(item => {
+      if (item.id === itemId) {
+        return { ...item, quantidadeAtual: (item.quantidadeAtual || 0) + qtdAlterada };
+      }
+      return item;
+    }));
   };
 
      
@@ -141,8 +169,22 @@ function App() {
           />
         )}
 
-        {tela === 'publicacoes' && <CadastroPublicacao />}
-        
+        {tela === 'publicacoes' && (
+          <CadastroPublicacao 
+            estoque={estoque} 
+            setEstoque={setEstoque}
+            movimentacoes={movimentacoes}
+            setMovimentacoes={setMovimentacoes}
+          />
+        )}
+
+        {tela === 'gestao_estoque' && (
+          <GestaoEstoque 
+            estoque={estoque} 
+            atualizarQuantidade={atualizarQuantidadeEstoque}
+          />
+        )}
+
         {tela === 'admin' && <AdminUsuarios />}
 
         {tela === 'pedidos' && (

@@ -1,18 +1,24 @@
 import { useState } from 'react';
-import { Map, Book, Users, History, LayoutDashboard, LogOut, UserCheck, MapPin, ChevronDown } from 'lucide-react';
+import { 
+  Map, Book, Users, History, LayoutDashboard, 
+  LogOut, UserCheck, MapPin, ChevronDown, Package, BookOpen
+} from 'lucide-react';
 
 export function Navbar({ telaAtiva, setTela, aoSair }) {
   const [menuTerritorioAberto, setMenuTerritorioAberto] = useState(false);
+  const [menuPublicacoesAberto, setMenuPublicacoesAberto] = useState(false);
+
   const navegarPara = (id) => {
     setTela(id);
     setMenuTerritorioAberto(false);
+    setMenuPublicacoesAberto(false);
   };
   
   return (
     <nav className="bg-[#1e3a8a] text-white p-4 shadow-lg relative z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        
-        {/* Identidade Visual */}
+
+        {/* Logo / Nome */}
         <div className="flex flex-col cursor-pointer" onClick={() => navegarPara('dashboard')}>
           <h1 className="text-xl font-extrabold tracking-tight leading-none uppercase">
             Gestão do Serviço
@@ -24,15 +30,13 @@ export function Navbar({ telaAtiva, setTela, aoSair }) {
 
         {/* Navegação Principal */}
         <div className="hidden lg:flex items-center gap-1">
-          <button
-            onClick={() => navegarPara('dashboard')}
-            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-all ${
-              telaAtiva === 'dashboard' ? 'bg-blue-600' : 'hover:bg-white/10'
-            }`}
-          >
+         <button onClick={() => navegarPara('dashboard')} className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-all ${telaAtiva === 'dashboard' ? 'bg-blue-600' : 'hover:bg-white/10'}`}>
             <LayoutDashboard size={18} /> Início
           </button>
 
+          <button onClick={() => navegarPara('publicadores')} className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-all ${telaAtiva === 'publicadores' ? 'bg-blue-600' : 'hover:bg-white/10'}`}>
+            <Users size={18} /> Publicadores
+          </button>
           <button
             onClick={() => navegarPara('admin')}
             className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-all ${
@@ -40,30 +44,15 @@ export function Navbar({ telaAtiva, setTela, aoSair }) {
             }`}
           >
             <UserCheck size={18} /> Admin
-          </button>
+          </button>    
 
-          <button
-            onClick={() => navegarPara('publicadores')}
-            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-all ${
-              telaAtiva === 'publicadores' ? 'bg-blue-600' : 'hover:bg-white/10'
-            }`}
-          >
-            <Users size={18} /> Publicadores
-          </button>
-
-          {/* MENU CASCATA: TERRITÓRIOS */}
+          {/* DROPDOWN: TERRITÓRIOS */}          
           <div className="relative">
             <button
-              onClick={() => setMenuTerritorioAberto(!menuTerritorioAberto)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-all ${
-                ['territorios', 'cadastro_territorio', 'historico'].includes(telaAtiva)
-                  ? 'bg-blue-700 text-white'
-                  : 'text-blue-100 hover:bg-white/10'
-              }`}
+              onClick={() => { setMenuTerritorioAberto(!menuTerritorioAberto); setMenuPublicacoesAberto(false); }}
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-all ${['territorios', 'cadastro_territorio', 'historico'].includes(telaAtiva) ? 'bg-blue-700' : 'hover:bg-white/10'}`}
             >
-              <Map size={18} /> 
-              Territórios 
-              <ChevronDown size={14} className={`transition-transform ${menuTerritorioAberto ? 'rotate-180' : ''}`} />
+              <Map size={18} /> Territórios <ChevronDown size={14} className={menuTerritorioAberto ? 'rotate-180' : ''} />
             </button>
 
             {/* Submenu (Cascata) */}
@@ -88,18 +77,36 @@ export function Navbar({ telaAtiva, setTela, aoSair }) {
                 >
                   <History size={16} className="text-blue-600" /> Histórico S-13
                 </button>
+
               </div>
             )}
           </div>
+          {/* DROPDOWN: PUBLICAÇÕES */}
+          <div className="relative">
+            <button
+              onClick={() => { setMenuPublicacoesAberto(!menuPublicacoesAberto); setMenuTerritorioAberto(false); }}
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-all ${['publicacoes', 'gestao_estoque'].includes(telaAtiva) ? 'bg-blue-700' : 'hover:bg-white/10'}`}
+            >
+              <Book size={18} /> Publicações <ChevronDown size={14} className={menuPublicacoesAberto ? 'rotate-180' : ''} />
+            </button>
 
-          <button
-            onClick={() => navegarPara('publicacoes')}
-            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-all ${
-              telaAtiva === 'publicacoes' ? 'bg-blue-600' : 'hover:bg-white/10'
-            }`}
-          >
-            <Book size={18} /> Publicações
-          </button>
+            {menuPublicacoesAberto && (
+              <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 text-gray-800">
+                <button
+                  onClick={() => navegarPara('publicacoes')}
+                  className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-semibold hover:bg-blue-50 transition-colors"
+                >
+                  <BookOpen size={16} className="text-blue-600" /> Catálogo
+                </button>
+                <button
+                  onClick={() => navegarPara('gestao_estoque')}
+                  className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-semibold hover:bg-blue-50 transition-colors"
+                >
+                  <Package size={16} className="text-blue-600" /> Gestão de Estoque
+                </button>
+              </div>
+            )}
+          </div>          
         </div>
 
         {/* Botão Sair */}
