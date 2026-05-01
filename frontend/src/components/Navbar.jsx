@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { 
-  Map, Book, Users, History, LayoutDashboard, 
+  Map, Book, Users, History, LayoutDashboard, Megaphone, User,
   LogOut, UserCheck, MapPin, ChevronDown, Package, BookOpen, Navigation
 } from 'lucide-react';
 
@@ -85,27 +85,50 @@ export function Navbar({ telaAtiva, setTela, aoSair }) {
             )}
           </div>
           {/* DROPDOWN: PUBLICAÇÕES */}
-          <div className="relative">
+          <div className="relative group">
             <button
-              onClick={() => { setMenuPublicacoesAberto(!menuPublicacoesAberto); setMenuTerritorioAberto(false); }}
-              className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-all ${['publicacoes', 'gestao_estoque'].includes(telaAtiva) ? 'bg-blue-700' : 'hover:bg-white/10'}`}
+              onClick={() => {
+              setMenuPublicacoesAberto(!menuPublicacoesAberto);
+              setMenuTerritorioAberto(false);
+              }}
+              className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-bold transition-all duration-300 ${
+                ['publicacoes', 'gestao_estoque', 'pedido_campanha', 'pedido_nominal'].includes(telaAtiva) 
+                  ? 'bg-white/20 shadow-inner' 
+                  : 'hover:bg-white/10'
+                }`}
             >
-              <Book size={18} /> Publicações <ChevronDown size={14} className={menuPublicacoesAberto ? 'rotate-180' : ''} />
+              <Book size={18} /> Publicações 
+              <ChevronDown size={14} className={`transition-transform duration-300 ${menuPublicacoesAberto ? 'rotate-180' : ''}`} />
             </button>
 
             {menuPublicacoesAberto && (
-              <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 text-gray-800">
-                <button
-                  onClick={() => navegarPara('publicacoes')}
-                  className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-semibold hover:bg-blue-50 transition-colors"
-                >
-                  <BookOpen size={16} className="text-blue-600" /> Catálogo
+              <div className="absolute top-full left-0 mt-3 w-72 bg-white/95 backdrop-blur-md rounded-4xl shadow-2xl border border-white/20 py-3 text-gray-800 animate-in fade-in zoom-in slide-in-from-top-2 duration-300 z-100">
+                <div className="px-4 py-2 mb-2 border-b border-gray-100/50">
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Gestão de Itens</span>
+                </div>
+      
+                <button onClick={() => navegarPara('publicacoes')} className="flex items-center gap-3 px-5 py-3 text-sm font-bold hover:bg-blue-50 text-gray-700 hover:text-blue-700 transition-all rounded-xl mx-2 w-[calc(100%-1rem)]">
+                  <div className="p-2 bg-blue-100 rounded-lg"><BookOpen size={16} className="text-blue-600" /></div>
+                  Catálogo
                 </button>
-                <button
-                  onClick={() => navegarPara('gestao_estoque')}
-                  className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-semibold hover:bg-blue-50 transition-colors"
-                >
-                  <Package size={16} className="text-blue-600" /> Gestão de Estoque
+
+                <button onClick={() => navegarPara('gestao_estoque')} className="flex items-center gap-3 px-5 py-3 text-sm font-bold hover:bg-amber-50 text-gray-700 hover:text-amber-700 transition-all rounded-xl mx-2 w-[calc(100%-1rem)]">
+                  <div className="p-2 bg-amber-100 rounded-lg"><Package size={16} className="text-amber-600" /></div>
+                    Estoque
+                </button>
+
+                <div className="px-4 py-2 mt-2 mb-2 border-b border-gray-100/50">
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Pedidos Especiais</span>
+                </div>
+
+                <button onClick={() => navegarPara('pedido_campanha')} className="flex items-center gap-3 w-full px-5 py-3 text-sm font-bold hover:bg-indigo-50 text-indigo-700 transition-all rounded-xl mx-2">
+                  <div className="p-2 bg-indigo-100 rounded-lg"><Megaphone size={16} /></div>
+                  Campanhas Especiais
+                </button>
+
+                <button onClick={() => navegarPara('pedido_nominal')} className="flex items-center gap-3 w-full px-5 py-3 text-sm font-bold hover:bg-orange-50 text-orange-700 transition-all rounded-xl mx-2">
+                  <div className="p-2 bg-orange-100 rounded-lg"><User size={16} /></div>
+                  Pedidos Nominais
                 </button>
               </div>
             )}

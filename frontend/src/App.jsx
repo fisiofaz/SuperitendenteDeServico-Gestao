@@ -11,6 +11,8 @@ import { ListaPublicadores } from './pages/ListaPublicadores';
 import { CadastroTerritorio } from './pages/CadastroTerritorio';
 import { GestaoEstoque } from './pages/GestaoEstoque';
 import { VisualizarMapa } from './pages/VisualizarMapa';
+import { PedidoCampanha } from './pages/PedidoCampanha';
+import { PedidoNominal } from './pages/PedidoNominal';
 
 
 function App() {
@@ -47,6 +49,29 @@ function App() {
     const salvos = localStorage.getItem('movimentacoes_tropical');
     return salvos ? JSON.parse(salvos) : [];
   });
+
+  const [campanhas, setCampanhas] = useState(() => {
+    const salvas = localStorage.getItem('campanhas_especiais');
+    return salvas ? JSON.parse(salvas) : [];
+  });
+
+  const salvarPedidoCampanha = (novaCampanha) => {
+    const atualizadas = [...campanhas, { ...novaCampanha, id: Date.now() }];
+    setCampanhas(atualizadas);
+    localStorage.setItem('campanhas_especiais', JSON.stringify(atualizadas));
+    setTela('dashboard'); // Volta para o início após salvar
+  };
+
+  const [pedidosNominais, setPedidosNominais] = useState(() => {
+    const salvas = localStorage.getItem('pedidos_nominais');
+    return salvas ? JSON.parse(salvas) : [];
+  });
+
+  const salvarPedidoNominal = (novoPedido) => {
+    const listaAtualizada = [...pedidosNominais, { ...novoPedido, id: Date.now(), data: new Date() }];
+    setPedidosNominais(listaAtualizada);
+    localStorage.setItem('pedidos_nominais', JSON.stringify(listaAtualizada));
+  };
   
   useEffect(() => {
     localStorage.setItem('pedidos_tropical', JSON.stringify(pedidos));
@@ -70,7 +95,7 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem('movimentacoes_tropical', JSON.stringify(movimentacoes));
-  }, [movimentacoes]);
+  }, [movimentacoes]);  
 
   const deletarPedido = (id) => {
     if (window.confirm("Remover este pedido?")) {
@@ -193,6 +218,21 @@ function App() {
           <GestaoEstoque 
             estoque={estoque} 
             atualizarQuantidade={atualizarQuantidadeEstoque}
+          />
+        )}
+
+        {tela === 'pedido_campanha' && (
+          <PedidoCampanha 
+            salvarPedidoCampanha={salvarPedidoCampanha}
+          />
+        )}
+
+        {tela === 'pedido_nominal' && (
+          <PedidoNominal 
+            publicadores={publicadores} 
+            estoque={estoque} 
+            pedidosExistentes={pedidosNominais}
+            salvarPedido={salvarPedidoNominal}
           />
         )}
 

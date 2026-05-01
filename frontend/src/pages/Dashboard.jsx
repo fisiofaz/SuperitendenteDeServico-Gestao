@@ -1,9 +1,25 @@
-import { Book, Map, Users, AlertTriangle, History, ClipboardCheck } from 'lucide-react'; 
+import { 
+  Book, Map, Users, ArrowRight, Package,
+  AlertTriangle, History, ClipboardCheck 
+} from 'lucide-react'; 
 
-export function Dashboard({ totalPedidos, irPara, totalRegistros = 0, totalTerritoriosRua = 0 }) {
+
+export function Dashboard({ 
+  totalPedidos, 
+  irPara, 
+  totalRegistros = 0, 
+  totalTerritoriosRua = 0,
+  estoque = []
+}) {
+
+  const itensCriticos = estoque.filter(item => 
+    (item.quantidadeAtual || 0) < (item.estoqueMinimo || 0)
+  ); 
+
   const cards = [
+
     {
-      id: 'admin',
+      id: 'publicadores',
       titulo: "Servos e Publicadores",
       desc: "Gerenciar a lista de irmãos autorizados e suas permissões.",
       valor: "04 Ativos",
@@ -57,8 +73,8 @@ export function Dashboard({ totalPedidos, irPara, totalRegistros = 0, totalTerri
   return (
     <div className="max-w-6xl mx-auto p-6">
       <header className="mb-10">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Painel Geral - Congregação Tropical</h2>
-        <p className="text-gray-500 text-center">Congregação Tropical - Sistema de Apoio ao Superintendente</p>
+        <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center uppercase tracking-tight">Painel Geral</h2>
+        <p className="text-gray-500 text-center font-medium">Congregação Tropical - Sistema de Apoio ao Superintendente</p>
       </header>    
       
       {/* Grade de Indicadores */}
@@ -86,18 +102,48 @@ export function Dashboard({ totalPedidos, irPara, totalRegistros = 0, totalTerri
               </p>
             </div>
             <div className="flex items-center text-sm font-bold text-gray-400 group-hover:text-gray-800 transition-colors">
-              Acessar módulo <span className="ml-2 group-hover:ml-4 transition-all">→</span>
+              Acessar módulo <ArrowRight size={16} className="ml-2 group-hover:ml-4 transition-all" />
             </div>
           </div>
         ))}
       </div>
-      <div className="bg-red-50 border border-red-100 rounded-3xl p-6 flex items-center gap-4">
-        <div className="bg-red-500 text-white p-2 rounded-full">
-          <AlertTriangle size={20} />
-        </div>
-        <div>
-          <h4 className="font-bold text-red-800 text-sm">Atenção Prioritária</h4>
-          <p className="text-red-600 text-xs">Existem 2 territórios que ultrapassaram o prazo de 4 meses. Verifique o histórico para contatar os publicadores.</p>
+
+      {/* ÁREA DE ALERTAS DINÂMICOS */}
+      <div className="space-y-4 mt-10">
+
+        {/* NOVO ALERTA: Estoque Baixo */}
+        {itensCriticos.length > 0 && (
+          <div 
+            className="bg-white/70 backdrop-blur-md border border-amber-200/50 rounded-[2rem] p-6 flex items-center justify-between group cursor-pointer hover:bg-white hover:shadow-xl hover:shadow-amber-100/50 transition-all duration-500"
+            onClick={() => irPara('gestao_estoque')              
+          }>
+            <div className="flex items-center gap-4">
+              <div className="bg-amber-500 text-white p-4 rounded-2xl shadow-lg shadow-amber-200 animate-pulse">
+                <Package size={20} />
+              </div>
+              <div>
+                <h4 className="font-bold text-amber-800 text-sm uppercase tracking-wider">Reposição Necessária</h4>
+                <p className="text-amber-700 text-xs font-medium mt-1">
+                  Existem {itensCriticos.length} itens abaixo do estoque mínimo. Clique para conferir as quantidades.
+                </p>
+              </div>
+            </div>
+            <div className="bg-amber-100 p-2 rounded-full text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition-all duration-300">
+              <ArrowRight size={20} />
+            </div>             
+          </div>
+        )}
+        {/* Territórios Atrasados */}
+        <div className="bg-white/70 backdrop-blur-md border border-red-200/50 rounded-[2rem] p-6 flex items-center gap-5 group hover:bg-white hover:shadow-xl hover:shadow-red-100/50 transition-all duration-500">
+          <div className="bg-red-500 text-white p-4 rounded-2xl shadow-lg shadow-red-200">
+            <AlertTriangle size={24} />
+          </div>
+          <div>
+            <h4 className="font-black text-red-900 text-sm uppercase tracking-wider text-italic">Prazos de Territórios</h4>
+            <p className="text-red-700/80 text-xs font-medium mt-1">
+              Atenção: 2 cartões ultrapassaram o limite de 4 meses na rua.
+            </p>
+          </div>
         </div>
       </div>
     </div>
