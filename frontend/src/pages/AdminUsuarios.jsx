@@ -75,45 +75,60 @@ export function AdminUsuarios() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <header className="flex justify-between items-center mb-8">
+    <div className="max-w-5xl mx-auto p-4 md:p-6 animate-in fade-in duration-500">
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">Administração</h2>
-          <p className="text-gray-500">Gerencie quem acessa o sistema da congregação</p>
+          <h2 className="text-2xl font-black text-gray-800 tracking-tight">Administração</h2>
+          <p className="text-sm text-gray-500">Gerencie quem acessa o sistema da congregação</p>
         </div>
         <button 
-          onClick={() => setModalAberto(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-all shadow-md"
+          onClick={() =>{
+            setUsuarioEmEdicao(null);
+            setModalAberto(true);
+          }}
+          className="w-full sm:w-auto bg-blue-600 text-white px-6 py-3 rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 flex items-center justify-center gap-2"
         >
-          + Novo Usuário
+          <span>+ Novo Usuário</span>
         </button>
       </header>
 
-      <Tabela colunas={colunas} dados={usuarios} aoDeletar={deletarUsuario} aoRecuperar={recuperarSenha} aoEditar={prepararEdicao}/>
-      {/* --- MODAL (A janelinha que flutua) --- */}
+      {/* Container com scroll para a tabela não quebrar o layout mobile */}
+      <div className="w-full overflow-x-auto rounded-4xl border border-gray-100 shadow-sm bg-white">
+         <Tabela 
+          colunas={colunas} 
+          dados={usuarios} 
+          aoDeletar={deletarUsuario} 
+          aoRecuperar={recuperarSenha} 
+          aoEditar={prepararEdicao}
+        />
+      </div>
+     
+      {/* --- MODAL AJUSTADO PARA MOBILE --- */}
       {modalAberto && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full relative">
-            <h3 className="text-xl font-bold mb-6 text-gray-800">Cadastrar Novo Usuário</h3>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-110 sm:p-4">
+          <div className="bg-white p-6 rounded-t-4xl sm:rounded-[2.5rem] shadow-2xl w-full max-w-md animate-in slide-in-from-bottom sm:zoom-in duration-300">
+            <h3 className="text-xl font-black mb-6 text-gray-800">
+              {usuarioEmEdicao ? "Editar Usuário" : "Adicionar Novo Usuário"}
+            </h3>
             
-            <form onSubmit={salvarNovoUsuario}>
+            <form onSubmit={salvarNovoUsuario} className="space-y-4">
               <Input label="Nome Completo" placeholder="Nome do irmão" value={novoNome} onChange={(e) => setNovoNome(e.target.value)} />
               <Input label="E-mail" type="email" placeholder="email@exemplo.com" value={novoEmail} onChange={(e) => setNovoEmail(e.target.value)} />
               <Select label="Nível de Acesso" options={opcoesPerfil} value={novoPerfil} onChange={(e) => setNovoPerfil(e.target.value)} />
 
-              <div className="flex gap-3 mt-6">
+              <div className="flex flex-col-reverse sm:flex-row gap-3 mt-8">
                 <button 
                   type="button"
                   onClick={() => setModalAberto(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50"
+                  className="px-6 py-3 rounded-2xl text-gray-500 font-bold hover:bg-gray-50 transition-all"
                 >
                   Cancelar
                 </button>
                 <button 
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold"
+                  className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 font-black shadow-lg shadow-blue-100 transition-all active:scale-95"
                 >
-                  Salvar
+                  {usuarioEmEdicao ? 'Salvar Alterações' : 'Criar Usuário'}
                 </button>
               </div>
             </form>
