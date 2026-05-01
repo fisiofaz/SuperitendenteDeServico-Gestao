@@ -10,11 +10,13 @@ import { HistoricoS13 } from './pages/HistoricoS13';
 import { ListaPublicadores } from './pages/ListaPublicadores';
 import { CadastroTerritorio } from './pages/CadastroTerritorio';
 import { GestaoEstoque } from './pages/GestaoEstoque';
+import { VisualizarMapa } from './pages/VisualizarMapa';
 
 
 function App() {
   const [tela, setTela] = useState('dashboard');
   const [isLogado, setIsLogado] = useState(false);   
+  const [territorioSelecionado, setTerritorioSelecionado] = useState(null);
   const [pedidos, setPedidos] = useState(() => {
     const salvos = localStorage.getItem('pedidos_tropical');
     return salvos ? JSON.parse(salvos) : [];
@@ -45,7 +47,7 @@ function App() {
     const salvos = localStorage.getItem('movimentacoes_tropical');
     return salvos ? JSON.parse(salvos) : [];
   });
-
+  
   useEffect(() => {
     localStorage.setItem('pedidos_tropical', JSON.stringify(pedidos));
   }, [pedidos]);
@@ -154,11 +156,20 @@ function App() {
             listaPublicadores={publicadores}
           />
         )}
+        
         {tela === 'cadastro_territorio' && (
           <CadastroTerritorio 
             territorios={territorios} 
             setTerritorios={setTerritorios} 
             aoAdicionar={adicionarNovoTerritorio} // <-- AQUI a função é usada!
+          />
+        )}
+        
+        {tela === 'visualizar_mapa' && (
+          <VisualizarMapa 
+            territorios={territorios}
+            territorioSelecionado={territorioSelecionado} 
+            setTerritorioSelecionado={setTerritorioSelecionado} 
           />
         )}
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { 
   Map, Book, Users, History, LayoutDashboard, 
-  LogOut, UserCheck, MapPin, ChevronDown, Package, BookOpen
+  LogOut, UserCheck, MapPin, ChevronDown, Package, BookOpen, Navigation
 } from 'lucide-react';
 
 export function Navbar({ telaAtiva, setTela, aoSair }) {
@@ -50,7 +50,7 @@ export function Navbar({ telaAtiva, setTela, aoSair }) {
           <div className="relative">
             <button
               onClick={() => { setMenuTerritorioAberto(!menuTerritorioAberto); setMenuPublicacoesAberto(false); }}
-              className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-all ${['territorios', 'cadastro_territorio', 'historico'].includes(telaAtiva) ? 'bg-blue-700' : 'hover:bg-white/10'}`}
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold transition-all ${['territorios', 'cadastro_territorio', 'historico', 'visualizar_mapa'].includes(telaAtiva) ? 'bg-blue-700' : 'hover:bg-white/10'}`}
             >
               <Map size={18} /> Territórios <ChevronDown size={14} className={menuTerritorioAberto ? 'rotate-180' : ''} />
             </button>
@@ -71,6 +71,9 @@ export function Navbar({ telaAtiva, setTela, aoSair }) {
                   <MapPin size={16} className="text-blue-600" /> Cadastrar Cartões
                 </button>
                 <div className="border-t border-gray-100 my-1"></div>
+                <button onClick={() => navegarPara('visualizar_mapa')} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-semibold hover:bg-green-50 text-green-700 transition-colors border-t border-gray-50 mt-1">
+                  <Navigation size={16} /> Visualizar Mapas
+                </button>
                 <button
                   onClick={() => navegarPara('historico')}
                   className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-semibold hover:bg-blue-50 transition-colors"
