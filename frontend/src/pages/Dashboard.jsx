@@ -71,37 +71,41 @@ export function Dashboard({
   ];
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <header className="mb-10">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center uppercase tracking-tight">Painel Geral</h2>
-        <p className="text-gray-500 text-center font-medium">Congregação Tropical - Sistema de Apoio ao Superintendente</p>
+    <div className="max-w-6xl mx-auto p-4 md:p-6 animate-in fade-in duration-500">
+      <header className="mb-8 md:mb-12">
+        <h2 className="text-xl md:text-2xl font-black text-gray-800 mb-2 text-center uppercase tracking-tight">
+          Painel Geral
+        </h2>
+        <p className="text-sm md:text-base text-gray-500 text-center font-medium">
+          Congregação Tropical - Sistema de Apoio ao Superintendente
+        </p>
       </header>    
       
-      {/* Grade de Indicadores */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-10">
+      {/* Grade de Indicadores: 1 col no mobile, 2 no tablet, 3 no desktop*/}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-10">
         {cards.map((card) => (
           <div 
             key={card.id} 
             onClick={() => irPara(card.id)} 
-            className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group flex flex-col justify-between h-64"
+            className="bg-white p-6 md:p-8 rounded-4xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group flex flex-col justify-between min-h-55 md:h-64"
           >
             <div>
-              <div className="flex items-center justify-between mb-6">
-                <div className={`p-4 ${card.corFundo} ${card.corIcone} rounded-2xl ${card.corHover} group-hover:text-white transition-all duration-300`}>
+              <div className="flex items-center justify-between mb-4 md:mb-6">
+                <div className={`p-3 md:p-4 ${card.corFundo} ${card.corIcone} rounded-2xl ${card.corHover} group-hover:text-white transition-all duration-300`}>
                   {card.icon}
                 </div>
-                <span className="text-sm font-bold text-gray-400 bg-gray-50 px-3 py-1 rounded-full uppercase tracking-widest">
+                <span className="text-[10px] md:text-xs font-black text-gray-400 bg-gray-50 px-3 py-1 rounded-full uppercase tracking-widest">
                   {card.valor}
                 </span>
               </div>
-              <h3 className="text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+              <h3 className="text-xl md:text-2xl font-black text-gray-800 group-hover:text-blue-600 transition-colors leading-tight">
                 {card.titulo}
               </h3>
-              <p className="text-sm text-gray-500 mt-2 leading-relaxed">
+              <p className="text-sm md:text-sm text-gray-500 mt-2 leading-relaxed line-clamp-2">
                 {card.desc}
               </p>
             </div>
-            <div className="flex items-center text-sm font-bold text-gray-400 group-hover:text-gray-800 transition-colors">
+            <div className="flex items-center text-[10px] md:text-xs font-black text-gray-400 group-hover:text-gray-800 transition-colors uppercase tracking-widest mt-4">
               Acessar módulo <ArrowRight size={16} className="ml-2 group-hover:ml-4 transition-all" />
             </div>
           </div>
@@ -109,39 +113,37 @@ export function Dashboard({
       </div>
 
       {/* ÁREA DE ALERTAS DINÂMICOS */}
-      <div className="space-y-4 mt-10">
+      <div className="grid grid-cols-1 gap-4 mt-10">
 
         {/* NOVO ALERTA: Estoque Baixo */}
         {itensCriticos.length > 0 && (
           <div 
-            className="bg-white/70 backdrop-blur-md border border-amber-200/50 rounded-4xl p-6 flex items-center justify-between group cursor-pointer hover:bg-white hover:shadow-xl hover:shadow-amber-100/50 transition-all duration-500"
-            onClick={() => irPara('gestao_estoque')              
-          }>
+            className="bg-amber-50/50 backdrop-blur-md border border-amber-200 rounded-4xl p-5 md:p-6 flex items-center justify-between group cursor-pointer hover:bg-white hover:shadow-lg transition-all duration-500"
+            onClick={() => irPara('gestao_estoque')}              
+          >
             <div className="flex items-center gap-4">
-              <div className="bg-amber-500 text-white p-4 rounded-2xl shadow-lg shadow-amber-200 animate-pulse">
+              <div className="bg-amber-500 text-whitep-3 md:p-4 rounded-2xl shadow-lg animate-pulse">
                 <Package size={20} />
               </div>
               <div>
-                <h4 className="font-bold text-amber-800 text-sm uppercase tracking-wider">Reposição Necessária</h4>
-                <p className="text-amber-700 text-xs font-medium mt-1">
+                <h4 className="font-black text-amber-800 text-xs md:text-sm uppercase tracking-wider">Reposição Necessária</h4>
+                <p className="text-amber-700 text-[10px] md:text-xs font-medium mt-1">
                   Existem {itensCriticos.length} itens abaixo do estoque mínimo. Clique para conferir as quantidades.
                 </p>
               </div>
-            </div>
-            <div className="bg-amber-100 p-2 rounded-full text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition-all duration-300">
-              <ArrowRight size={20} />
-            </div>             
+            </div>           
+             <ArrowRight size={20} className="text-amber-400 group-hover:text-amber-600 transition-all" />            
           </div>
         )}
         {/* Territórios Atrasados */}
-        <div className="bg-white/70 backdrop-blur-md border border-red-200/50 rounded-4xl p-6 flex items-center gap-5 group hover:bg-white hover:shadow-xl hover:shadow-red-100/50 transition-all duration-500">
-          <div className="bg-red-500 text-white p-4 rounded-2xl shadow-lg shadow-red-200">
+        <div className="bg-red-50/50 backdrop-blur-md border border-red-200 rounded-4xl p-5 md:p-6 flex items-center gap-4 group hover:bg-white transition-all duration-500">
+          <div className="bg-red-500 text-white p-3 md:p-4 rounded-2xl">
             <AlertTriangle size={24} />
           </div>
           <div>
-            <h4 className="font-black text-red-900 text-sm uppercase tracking-wider text-italic">Prazos de Territórios</h4>
-            <p className="text-red-700/80 text-xs font-medium mt-1">
-              Atenção: 2 cartões ultrapassaram o limite de 4 meses na rua.
+            <h4 className="font-black text-red-900 text-xs md:text-sm uppercase tracking-wider italic">Prazos de Territórios</h4>
+            <p className="text-red-700/80 text-[10px] md:text-xs font-medium mt-1">
+              Atenção: 2 cartões ultrapassaram o limite de 4 meses.
             </p>
           </div>
         </div>
