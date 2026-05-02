@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { 
-  Map, Book, Users, History, LayoutDashboard, Megaphone, User,
+  Map, Book, Users, History, LayoutDashboard, Megaphone, User, ClipboardCheck,
   LogOut, UserCheck, MapPin, ChevronDown, Package, BookOpen, Navigation, Menu, X
 } from 'lucide-react';
 
@@ -142,6 +142,11 @@ export function Navbar({ telaAtiva, setTela, aoSair }) {
                   <div className="p-2 bg-orange-100 rounded-lg"><User size={16} /></div>
                   Pedidos Nominais
                 </button>
+
+                <button onClick={() => navegarPara('pedidos_consolidados')} className="flex items-center gap-3 px-5 py-3 text-sm font-bold hover:bg-blue-50 transition-all rounded-xl mx-2 w-[calc(100%-1rem)]">
+                  <div className="p-2 bg-blue-100 rounded-lg"><ClipboardCheck size={16} className="text-blue-600" /></div>
+                  Controle de Pedidos
+                </button>
               </div>
             )}
           </div>          
@@ -203,6 +208,19 @@ export function Navbar({ telaAtiva, setTela, aoSair }) {
                   </button>
                   <button onClick={() => navegarPara('gestao_estoque')} className="flex items-center gap-4 p-3 rounded-2xl text-sm font-medium hover:bg-white/5">
                     <Package size={18} /> Estoque
+                  </button>
+                  <button onClick={() => navegarPara('pedidos_consolidados')} className="flex items-center gap-4 p-3 rounded-2xl text-sm font-medium hover:bg-white/5">
+                    <ClipboardCheck size={18} /> Controle de Pedidos
+                  </button>
+                  
+                  <button onClick={() => navegarPara('pedido_campanha')} className="flex items-center gap-4 p-3 rounded-2xl text-sm font-medium hover:bg-white/5">
+                    <div className="p-2 bg-indigo-100 rounded-lg"><Megaphone size={16} /></div>
+                    Campanhas Especiais
+                  </button>
+
+                  <button onClick={() => navegarPara('pedido_nominal')} className="flex items-center gap-4 p-3 rounded-2xl text-sm font-medium hover:bg-white/5">
+                    <div className="p-2 bg-orange-100 rounded-lg"><User size={16} /></div>
+                    Pedidos Nominais
                   </button>
                 </div>
               </div>
